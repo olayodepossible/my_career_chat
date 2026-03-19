@@ -1,9 +1,14 @@
 import os
+import json
+import requests
+import gradio as gr
 from dotenv import load_dotenv
 from openai import OpenAI
 from pypdf import PdfReader
-import gradio as gr
 from pydantic import BaseModel
+from dotenv import load_dotenv
+from openai import OpenAI
+
 
 load_dotenv(override=True)
 openai_api_key = os.getenv('OPENROUTER_API_KEY')
@@ -11,6 +16,11 @@ base_url = os.getenv('OPEN_ROUTER_BASE_URL')
 name = os.getenv('RESUME_NAME')
 resume = os.getenv('RESUME_FILE_NAME')
 summary = os.getenv('RESUME_SUMMARY_FILE_NAME')
+pushover_user = os.getenv("PUSHOVER_USER")
+pushover_token = os.getenv("PUSHOVER_TOKEN")
+pushover_url = "https://api.pushover.net/1/messages.json"
+
+
 openai = OpenAI(base_url=base_url, api_key=openai_api_key)
 
 
@@ -34,6 +44,13 @@ If you don't know the answer, say so."
 
 system_prompt += f"\n\n## Summary:\n{summary_text}\n\n## LinkedIn Profile:\n{resume_text}\n\n"
 system_prompt += f"With this context, please chat with the user, always staying in character as {name}."
+
+# Push notification function
+def push_notification(message):
+    print(f"Push: {message}")
+    payload = {"user": pushover_user, "token": pushover_token, "message": message}
+    requests.post(pushover_url, data=payload)
+
 
 def chat(message, history):
     history = [{"role": h["role"], "content": h["content"]} for h in history]
