@@ -1,0 +1,14 @@
+[project]
+name = "my-career-chat"
+version = "0.1.0"
+description = "Agentic AI career chat"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.32.5",
+    "python-dotenv",
+    "gradio",
+    "pypdf",
+    "openai",
+    "openai-agents",
+]
